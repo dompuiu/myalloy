@@ -23,6 +23,32 @@ export default (excludedModules, t) => {
             );
           }
         }
+      },
+
+      Identifier(path) {
+        if (path.node.name === "require") {
+          let parentPath = path;
+          while (parentPath.listKey !== "body") {
+            parentPath = parentPath.parentPath;
+          }
+
+          const skipWhenComments =
+            parentPath.node.leadingComments?.filter((c) => {
+              return c.value.trim().startsWith("@skipwhen");
+            }) || [];
+
+          if (skipWhenComments.length > 0) {
+            const [
+              _,
+              webSDKModuleName,
+              value
+            ] = skipWhenComments[0].value.match("ENV.(.*) === (false|true)");
+
+            if (excludedModules[webSDKModuleName] === value) {
+              path.parentPath.replaceWith(t.Identifier("undefined"));
+            }
+          }
+        }
       }
     }
   };

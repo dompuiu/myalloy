@@ -25,6 +25,9 @@ import createEventMerge from "../components/EventMerge";
 import createLibraryInfo from "../components/LibraryInfo";
 import createMachineLearning from "../components/MachineLearning";
 
+/* @skipwhen ENV.alloy_serban === false */
+const serban = require("./serban");
+
 // TODO: Register the Components here statically for now. They might be registered differently.
 // TODO: Figure out how sub-components will be made available/registered
 export default [
@@ -37,5 +40,6 @@ export default [
   createPrivacy,
   createEventMerge,
   createLibraryInfo,
-  createMachineLearning
+  createMachineLearning,
+  serban
 ].filter((module) => typeof module !== "undefined");

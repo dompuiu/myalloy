@@ -14,7 +14,7 @@ const argv = yargs(hideBin(process.argv))
   .usage("$0 --exclude personalization audiences")
   .option("exclude", {
     describe: "the modules that you want to be excluded from the build",
-    choices: ["personalization", "audiences"],
+    choices: ["personalization", "audiences", "serban"],
     type: "array"
   })
   .array("exclude").argv;
@@ -25,9 +25,7 @@ const buildConfig = (minify) => {
       preferBuiltins: false,
       mainFields: ["module", "main", "browser"]
     }),
-    commonjs(),
     babel({
-      envName: "rollup",
       babelHelpers: "bundled",
       configFile: "./babel.config.js",
       plugins: [
@@ -39,7 +37,8 @@ const buildConfig = (minify) => {
           types
         )
       ]
-    })
+    }),
+    commonjs({ transformMixedEsModules: true })
   ];
 
   if (minify) {
